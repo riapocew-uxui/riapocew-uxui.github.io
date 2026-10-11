@@ -18,3 +18,19 @@ function revealSection(hash){if(!hash||hash.length<2)return;const section=docume
 document.querySelectorAll('.case-aside a').forEach(a=>a.addEventListener('click',()=>revealSection(a.hash)));
 window.addEventListener('hashchange',()=>revealSection(location.hash));
 revealSection(location.hash);
+
+// Theme preference is shared by the homepage and every case study.
+const themeButton=document.querySelector('.theme-toggle');
+function applyTheme(theme){
+ document.documentElement.dataset.theme=theme;
+ const dark=theme==='dark';
+ themeButton.setAttribute('aria-pressed',String(dark));
+ themeButton.setAttribute('aria-label',dark?'Включить светлую тему':'Включить тёмную тему');
+ themeButton.querySelector('.theme-label').textContent=dark?'Светлая тема':'Тёмная тема';
+ document.querySelector('meta[name="theme-color"]').content=dark?'#19191d':'#f6f5f1';
+}
+if(themeButton){
+ applyTheme(document.documentElement.dataset.theme||'light');
+ themeButton.addEventListener('click',()=>{const theme=document.documentElement.dataset.theme==='dark'?'light':'dark';applyTheme(theme);try{localStorage.setItem('portfolio-theme',theme)}catch{}});
+ window.addEventListener('storage',event=>{if(event.key==='portfolio-theme')applyTheme(event.newValue==='dark'?'dark':'light')});
+}
